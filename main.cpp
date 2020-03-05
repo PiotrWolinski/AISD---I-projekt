@@ -1,4 +1,5 @@
-#include <iostream>
+#include <stdlib.h>
+#include <stdio.h>
 
 struct type {
 	char* arr;
@@ -6,7 +7,7 @@ struct type {
 	unsigned short sign; // 1 - liczba ujemna, 0 - liczba dodatnia
 };
 
-unsigned int find_min(type* &array, unsigned int size)
+unsigned int find_min(type* array, unsigned int size)
 {
 	unsigned int current = 1;
 	unsigned int min_index = 0;
@@ -17,14 +18,12 @@ unsigned int find_min(type* &array, unsigned int size)
 		{ 
 			min_index = current;
 			min_sign = array[current].sign;
-			break;
 		}
 		else if (array[current].sign == min_sign && min_sign == 1) //maja ten sam znak czyli minus, wiec trzeba porownywac dlugosc cyfr
 		{
 			if (array[current].length > array[min_index].length)
 			{
 				min_index = current;
-				break;
 			}
 			else if (array[current].length == array[min_index].length)
 			{
@@ -36,6 +35,11 @@ unsigned int find_min(type* &array, unsigned int size)
 						min_index = current;
 						break;
 					}
+					else if (array[current].arr[i] < array[min_index].arr[i])
+					{
+						break;
+					}
+
 					++i;
 				}
 			}
@@ -45,7 +49,6 @@ unsigned int find_min(type* &array, unsigned int size)
 			if (array[current].length < array[min_index].length)
 			{
 				min_index = current;
-				break;
 			}
 			else if (array[current].length == array[min_index].length)
 			{
@@ -57,6 +60,10 @@ unsigned int find_min(type* &array, unsigned int size)
 						min_index = current;
 						break;
 					}
+					else if (array[current].arr[i] > array[min_index].arr[i])
+					{
+						break;
+					}
 					++i;
 				}
 			}
@@ -66,7 +73,7 @@ unsigned int find_min(type* &array, unsigned int size)
 	return min_index;
 }
 
-unsigned int find_max(type*& array, unsigned int size)
+unsigned int find_max(type* array, unsigned int size)
 {
 	unsigned int current = 1;
 	unsigned int max_index = 0;
@@ -77,23 +84,25 @@ unsigned int find_max(type*& array, unsigned int size)
 		{
 			max_index = current;
 			max_sign = array[current].sign;
-			break;
 		}
 		else if (array[current].sign == max_sign && max_sign == 0) //maja ten sam znak czyli plus, wiec trzeba porownywac dlugosc cyfr
 		{
 			if (array[current].length > array[max_index].length)
 			{
 				max_index = current;
-				break;
 			}
 			else if (array[current].length == array[max_index].length)
 			{
 				unsigned int i = 0; //zaczynam od 0, poniewaz tutaj nie ma informacji o znaku
-				while (array[current].arr[i] != '\0')
+				while (array[current].arr[i] != '\0' && array[max_index].arr[i] != '\0')
 				{
 					if (array[current].arr[i] > array[max_index].arr[i])
 					{
 						max_index = current;
+						break;
+					}
+					else if (array[current].arr[i] < array[max_index].arr[i])
+					{
 						break;
 					}
 					++i;
@@ -105,7 +114,6 @@ unsigned int find_max(type*& array, unsigned int size)
 			if (array[current].length < array[max_index].length)
 			{
 				max_index = current;
-				break;
 			}
 			else if (array[current].length == array[max_index].length)
 			{
@@ -117,29 +125,43 @@ unsigned int find_max(type*& array, unsigned int size)
 						max_index = current;
 						break;
 					}
+					else if (array[current].arr[i] > array[max_index].arr[i])
+					{
+						break;
+					}
 					++i;
 				}
 			}
 		}
-		++current;
+		current++;
 	}
 	return max_index;
 }
 
+void addition(char* arr1, char* arr2)
+{
+
+}
+
+void subtraction()
+{
+
+}
+
 int main(int argc, char* argv[])
 {
-	int n = 0;
+	unsigned int n = 0;
 	scanf_s("%d", &n);
 	type* array= (type*)malloc(n * sizeof(type));
 	unsigned int size = n;
 	unsigned int count = 0;
-	char blank = getchar();
+	int blank = getchar();
 	do
 	{
-		int arr_size = 1;
+		unsigned int arr_size = 1;
 		array[count].arr = (char*)malloc(sizeof(char));
 
-		if (array[count].arr != NULL != NULL)
+		if (array[count].arr != NULL)
 		{
 			char q;
 			unsigned int i = 0;
@@ -156,7 +178,7 @@ int main(int argc, char* argv[])
 				}
 			}
 			array[count].sign = (array[count].arr[0] == '-') ? 1 : 0;
-			array[count].length = (array[count].sign) ? i + 1 : i; //okreslenie dlugosci ciagu znakow
+			array[count].length = (array[count].sign) ? i - 1 : i; //okreslenie dlugosci ciagu znakow
 			array[count].arr[i] = '\0';
 			count++;
 		}
@@ -164,13 +186,16 @@ int main(int argc, char* argv[])
 
 	while (true)
 	{
-		char* sentence;
+		char sentance[24];
+		unsigned int i = 0;
+		unsigned int j = 0;
+		unsigned int k = 0;
 		char input = getchar();
-		if(input == '?')
+		if (input == '?')
 		{
 			for (int i = 0; i < size; i++)
 			{
-				printf("%d %s\n",array[i].sign, array[i].arr);
+				printf("%s\n",array[i].arr);
 			}
 		}
 		else if (input == 'q')
@@ -179,18 +204,17 @@ int main(int argc, char* argv[])
 		}
 		else if (input == 'm')
 		{
-			char second;
-			if ((second = getchar() ) == 'i')
+			char second = getchar();
+			char third = getchar();
+			if (second == 'i' && third == 'n')
 			{
-				printf("%s\n", array[find_min(array, size)].arr);
+				unsigned int min = find_min(array, size);
+				printf("%s\n", array[min].arr);
 			}
-		}
-		else if (input == 'm')
-		{
-			char second;
-			if ((second = getchar()) == 'a')
+			else if (second == 'a' && third == 'x')
 			{
-				printf("%s\n", array[find_max(array, size)].arr);
+				unsigned int max = find_max(array, size);
+				printf("%s\n", array[max].arr);
 			}
 		}
 	}
