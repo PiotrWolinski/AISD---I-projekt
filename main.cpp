@@ -122,7 +122,6 @@ unsigned int find_min(type* array, unsigned int size)
 					{
 						break;
 					}
-
 					++i;
 				}
 			}
@@ -135,7 +134,7 @@ unsigned int find_min(type* array, unsigned int size)
 			}
 			else if (array[current].length == array[min_index].length)
 			{
-				unsigned int i = 1; //zaczynam od 1, poniewaz pierwszy znak mowi o znaku liczby
+				unsigned int i = 0; //zaczynam od 1, poniewaz pierwszy znak mowi o znaku liczby
 				while (array[current].arr[i] != '\0')
 				{
 					if (array[current].arr[i] < array[min_index].arr[i])
@@ -200,7 +199,7 @@ unsigned int find_max(type* array, unsigned int size)
 			}
 			else if (array[current].length == array[max_index].length)
 			{
-				unsigned int i = 0; //zaczynam od 0, poniewaz tutaj nie ma informacji o znaku
+				unsigned int i = 1; //zaczynam od 0, poniewaz tutaj jest informacja o znaku
 				while (array[current].arr[i] != '\0')
 				{
 					if (array[current].arr[i] < array[max_index].arr[i])
@@ -339,6 +338,7 @@ int main(int argc, char* argv[])
 	unsigned int n = 0;
 	scanf_s("%d", &n);
 	type* array = (type*)malloc(n * sizeof(type));
+	int* arr_test = (int*)malloc(n * sizeof(int));
 	unsigned int size = n;
 	unsigned int count = 0;
 	int blank = getchar();
@@ -368,8 +368,9 @@ int main(int argc, char* argv[])
 			array[count].arr[i] = '\0';
 			count++;
 		}
+		arr_test[count] = 0;
 	} while (count < n);
-
+	int counter = 0;
 	while (true)
 	{
 		const char sign = '=';
@@ -382,6 +383,7 @@ int main(int argc, char* argv[])
 		{
 			if (action == '+')
 			{
+				arr_test[i] = 1;
 				addition(&array[i], &array[j], &array[k]);
 			}
 			else if (action == '-')
@@ -393,12 +395,16 @@ int main(int argc, char* argv[])
 				printf("Undefined\n");
 			}
 		}
-
 		char input = getchar();
 		if (input == '?')
 		{
+			counter++;
 			for (int i = 0; i < size; i++)
 			{
+				/*if (arr_test[i] == 1)
+				{
+					printf("1 ");
+				}*/
 				/*printf("%d %s\n",array[i].length, array[i].arr);*/
 				printf("%s\n", array[i].arr);
 			}
