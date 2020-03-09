@@ -39,11 +39,11 @@ char* add_sign(type* arr)
 }
 
 //jesli wieksza jest pierwsza liczba, to zwroci 1, jak wieksza jest druga to 2, a jesli sa rowne to 0
-unsigned short which_bigger(type arr1, type arr2)
+unsigned short which_bigger(type* arr1, type* arr2)
 {
-	if (arr1.sign != arr2.sign)
+	if (arr1->sign != arr2->sign)
 	{
-		if (arr1.sign == 0) //to znaczy, ze arr2 jest ujemne i mozna zamienic to na odejmowanie bez znaku
+		if (arr1->sign == 0) //to znaczy, ze arr2 jest ujemne i mozna zamienic to na odejmowanie bez znaku
 		{
 			return 1;
 		}
@@ -52,26 +52,26 @@ unsigned short which_bigger(type arr1, type arr2)
 			return 2;
 		}
 	}
-	else if (arr1.sign == 0) //obydwie sa dodatnie i trzeba sprawdzic, ktora jest wieksza
+	else if (arr1->sign == 0) //obydwie sa dodatnie i trzeba sprawdzic, ktora jest wieksza
 	{
-		if (arr1.length > arr2.length)
+		if (arr1->length > arr2->length)
 		{
 			return 1;
 		}
-		else if (arr1.length < arr2.length)
+		else if (arr1->length < arr2->length)
 		{
 			return 2;
 		}
 		else
 		{
 			unsigned int i = 0;
-			while (arr1.arr[i] != '\0' && arr2.arr[i] != '\0')
+			while (arr1->arr[i] != '\0' && arr2->arr[i] != '\0')
 			{
-				if (arr1.arr[i] > arr2.arr[i])
+				if (arr1->arr[i] > arr2->arr[i])
 				{
 					return 1;
 				}
-				else if (arr1.arr[i] < arr2.arr[i])
+				else if (arr1->arr[i] < arr2->arr[i])
 				{
 					return 2;
 				}
@@ -80,26 +80,26 @@ unsigned short which_bigger(type arr1, type arr2)
 			return 0;
 		}
 	}
-	else if (arr1.sign == 1)
+	else if (arr1->sign == 1)
 	{
-		if (arr1.length < arr2.length)
+		if (arr1->length < arr2->length)
 		{
 			return 1;
 		}
-		else if (arr1.length > arr2.length)
+		else if (arr1->length > arr2->length)
 		{
 			return 2;
 		}
 		else
 		{
 			unsigned int i = 0;
-			while (arr1.arr[i] != '\0' && arr2.arr[i] != '\0')
+			while (arr1->arr[i] != '\0' && arr2->arr[i] != '\0')
 			{
-				if (arr1.arr[i] < arr2.arr[i])
+				if (arr1->arr[i] < arr2->arr[i])
 				{
 					return 1;
 				}
-				else if (arr1.arr[i] > arr2.arr[i])
+				else if (arr1->arr[i] > arr2->arr[i])
 				{
 					return 2;
 				}
@@ -112,21 +112,33 @@ unsigned short which_bigger(type arr1, type arr2)
 }
 
 //jesli absolutnie wieksza jest pierwsza liczba, to zwroci 1, jak wieksza jest druga to 2, a jesli sa rowne to 0
-int abs_bigger(type arr1, type arr2)
+unsigned short abs_bigger(type arr1, type arr2)
 {
 	type* new_arr1 = (type*)malloc(sizeof(type));
-	type* new_arr2 = (type*)malloc(sizeof(type));;
+	type* new_arr2 = (type*)malloc(sizeof(type));
+	new_arr1->sign = 0;
+	new_arr1->length = arr1.length;
+	new_arr2->sign = 0;
+	new_arr2->length = arr2.length;
 	if (arr1.sign != 0)
 	{
 		new_arr1->arr = remove_sign(&arr1);
+	}
+	else
+	{
+		new_arr1->arr = arr1.arr;
 	}
 
 	if (arr2.sign != 0)
 	{
 		new_arr2->arr = remove_sign(&arr2);
 	}
+	else
+	{
+		new_arr2->arr = arr2.arr;
+	}
 	
-	return which_bigger(*new_arr1, *new_arr2);
+	return which_bigger(new_arr1, new_arr2);
 }
 
 unsigned int find_min(type* array, unsigned int size)
@@ -351,50 +363,40 @@ void add_to_lower(type* base_arr, type* arr1, type* arr2)
 	base_arr->arr = tmp_main;
 }
 
-void add_different(type* base_arr, type* arr1, type* arr2)
+void add_two_negatives(type* base_arr, type* arr1, type* arr2)
 {
+	unsigned short bigger = abs_bigger(*arr1, *arr2);
 
-}
+	type* tmp1;
+	if (tmp1 = (type*)malloc(sizeof(type)))
+	{
+		tmp1->length = arr1->length;
+		tmp1->sign = 0;
+		tmp1->arr = remove_sign(arr1);
+	}
 
-void addition(type* arr_i, type* arr_j, type* arr_k)
-{
-	unsigned short sign1 = arr_j->sign;
-	unsigned short sign2 = arr_k->sign;
-	unsigned short bigger = which_bigger(*arr_j, *arr_k);
-	if (sign1 == sign2 && sign1 == 0)
+	type* tmp2;
+	if (tmp2 = (type*)malloc(sizeof(type)))
 	{
-		if (bigger == 1) //arr_j jest wieksza, wiec petla bedzie iterowala do konca arr_k
-		{
-			add_to_bigger(arr_i, arr_j, arr_k);	
-		}
-		else if (bigger == 2)
-		{
-			add_to_bigger(arr_i, arr_k, arr_j);
-		}
-		else
-		{
-			add_to_bigger(arr_i, arr_j, arr_j);
-		}
+		tmp2->length = arr2->length;
+		tmp2->sign = 0;
+		tmp2->arr = remove_sign(arr2);
 	}
-	else if (sign1 == sign2 && sign1 == 1) //z uzyciem funkcji bede zawsze dodawal do mniejszego 
-	{
-		if (bigger == 1)
-		{
-			add_to_lower(arr_i, arr_k, arr_j);
-		}
-		else if (bigger == 2)
-		{
-			add_to_lower(arr_i, arr_j, arr_k);
-		}
-		else
-		{
-			add_to_lower(arr_i, arr_j, arr_k);
-		}
-	}
-	else //rozne znaki :/ to bedzie po prostu zamienione na odejmowanie
-	{
 
+	if (bigger == 1)
+	{
+		add_to_bigger(base_arr, tmp1, tmp2);
 	}
+	else if (bigger == 2)
+	{
+		add_to_bigger(base_arr, tmp2, tmp1);
+	}
+	else
+	{
+		add_to_bigger(base_arr, tmp1, tmp1);
+	}
+	base_arr->arr = add_sign(base_arr);
+	base_arr->sign = 1;
 }
 
 void subtraction_from_bigger(type* base_arr, type* arr1, type* arr2)
@@ -435,27 +437,125 @@ void subtraction_from_bigger(type* base_arr, type* arr1, type* arr2)
 	base_arr->arr = tmp_main;
 }
 
+void addition(type* arr_i, type* arr_j, type* arr_k)
+{
+	unsigned short sign1 = arr_j->sign;
+	unsigned short sign2 = arr_k->sign;
+	unsigned short bigger = which_bigger(arr_j, arr_k);
+	if (!sign1 && !sign2) //dodawanie dwoch dodatnich
+	{
+		if (bigger == 1) //arr_j jest wieksza, wiec petla bedzie iterowala do konca arr_k
+		{
+			add_to_bigger(arr_i, arr_j, arr_k);	
+		}
+		else if (bigger == 2)
+		{
+			add_to_bigger(arr_i, arr_k, arr_j);
+		}
+		else
+		{
+			add_to_bigger(arr_i, arr_j, arr_j);
+		}
+	}
+	else if (sign1 && sign2) //dodawanie dwoch ujemnych
+	{
+		add_two_negatives(arr_i, arr_j, arr_k);
+		/*if (bigger == 1)
+		{
+			add_to_lower(arr_i, arr_k, arr_j);
+		}
+		else if (bigger == 2)
+		{
+			add_to_lower(arr_i, arr_j, arr_k);
+		}
+		else
+		{
+			add_to_lower(arr_i, arr_j, arr_k);
+		}*/
+	}
+	else if (sign1 && !sign2) //dodawanie liczb o roznych znakach - arr_j - ujemne, arr_k - dodatnie
+	{
+		bigger = abs_bigger(*arr_j, *arr_k);
+
+		type* tmp;
+		if (tmp = (type*)malloc(sizeof(type)))
+		{
+			tmp->length = arr_j->length;
+			tmp->sign = 0;
+			tmp->arr = remove_sign(arr_j);
+		}
+
+		if (bigger == 1) //abs(arr_j) wieksze 
+		{
+			subtraction_from_bigger(arr_i, tmp, arr_k);
+			arr_i->sign = 1;
+			arr_i->arr = add_sign(arr_i);
+		}
+		else if (bigger == 2) //abs(arr_k) wieksze
+		{
+			subtraction_from_bigger(arr_i, arr_k, tmp);
+		}
+		else
+		{
+			arr_i->sign = 0;
+			arr_i->length = 1;
+			arr_i->arr[0] = '0';
+			arr_i->arr[1] = '\0';
+		}
+	}
+	else if (!sign1 && sign2) //dodawanie liczb o roznych znakach
+	{
+		bigger = abs_bigger(*arr_j, *arr_k);
+
+		type* tmp;
+		if (tmp = (type*)malloc(sizeof(type)))
+		{
+			tmp->length = arr_k->length;
+			tmp->sign = 0;
+			tmp->arr = remove_sign(arr_k);
+		}
+
+		if (bigger == 1)  //abs(arr_j) wieksze 
+		{
+			subtraction_from_bigger(arr_i, arr_j, tmp);
+		}
+		else if (bigger == 2) //abs(arr_k) wieksze
+		{
+			subtraction_from_bigger(arr_i, tmp, arr_j);
+			arr_i->arr = add_sign(arr_i);
+			arr_i->sign = 1;
+		}
+		else
+		{
+			arr_i->sign = 0;
+			arr_i->length = 1;
+			arr_i->arr[0] = '0';
+			arr_i->arr[1] = '\0';
+		}
+	}
+}
+
 void subtraction(type* arr_i, type* arr_j, type* arr_k)
 {
 	unsigned short sign1 = arr_j->sign;
 	unsigned short sign2 = arr_k->sign;
 	unsigned short bigger = abs_bigger(*arr_j, *arr_k);
 	
-	if (!sign1 && !sign2 && which_bigger(*arr_j, *arr_k) == 1)
+	if (!sign1 && !sign2 && which_bigger(arr_j, arr_k) == 1)
 	{
 		subtraction_from_bigger(arr_i, arr_j, arr_k);
 	}
-	else if (!sign1 && !sign2 && which_bigger(*arr_j, *arr_k) == 2) //wynik bedzie na minusie
+	else if (!sign1 && !sign2 && which_bigger(arr_j, arr_k) == 2) //wynik bedzie na minusie
 	{
 		arr_i->sign = 1;
 		subtraction_from_bigger(arr_i, arr_k, arr_j);
 		arr_i->arr = add_sign(arr_i);
+		arr_i->sign = 1;
 	}
-	else if (!sign1 && !sign2 && which_bigger(*arr_j, *arr_k) == 0)
+	else if (!sign1 && !sign2 && which_bigger(arr_j, arr_k) == 0)
 	{
-		char* tmp = (char*)malloc(2 * sizeof(char));
 		arr_i->sign = 0;
-		arr_i->length = 0;
+		arr_i->length = 1;
 		arr_i->arr[0] = '0';
 		arr_i->arr[1] = '\0';
 	}
@@ -468,7 +568,7 @@ void subtraction(type* arr_i, type* arr_j, type* arr_k)
 			tmp->sign = 0;
 			tmp->arr = remove_sign(arr_k);
 		}
-		short int bigger = which_bigger(*arr_j, *tmp);
+		short int bigger = which_bigger(arr_j, tmp);
 		if (bigger == 1) 
 		{
 			add_to_bigger(arr_i, arr_j, tmp);
@@ -482,9 +582,83 @@ void subtraction(type* arr_i, type* arr_j, type* arr_k)
 			add_to_bigger(arr_i, arr_j, arr_j);
 		}
 	}
-	else if (sign1 && !sign2)
+	else if (sign1 && !sign2) //przypadek dla arr_j ujemnego
 	{
+		type* tmp1;
+		if (tmp1 = (type*)malloc(sizeof(type)))
+		{
+			tmp1->length = arr_j->length;
+			tmp1->sign = 0;
+			tmp1->arr = remove_sign(arr_j);
+		}
 
+		type* tmp2;
+		if (tmp2 = (type*)malloc(sizeof(type)))
+		{
+			tmp2->length = arr_k->length;
+			tmp2->sign = 1;
+			tmp2->arr = add_sign(arr_k);
+		}
+		
+		if (bigger == 1) //wieksze arr_j
+		{
+			add_to_bigger(arr_i, tmp1, arr_k);
+			arr_i->arr = add_sign(arr_i);
+			arr_i->sign = 1;
+		}
+		else if (bigger == 2) //wieksze arr_k
+		{
+			add_two_negatives(arr_i, arr_j, tmp2);
+			/*add_to_lower(arr_i, tmp1, tmp2);*/
+		}
+		else
+		{
+			add_to_bigger(arr_i, tmp1, arr_k);
+			arr_i->arr = add_sign(arr_i);
+			arr_i->sign = 1;
+		}
+	}
+	else if (sign1 && sign2 && bigger == 1)
+	{
+		type* tmp1;
+		if (tmp1 = (type*)malloc(sizeof(type)))
+		{
+			tmp1->length = arr_j->length;
+			tmp1->sign = 0;
+			tmp1->arr = remove_sign(arr_j);
+		}
+
+		type* tmp2;
+		if (tmp2 = (type*)malloc(sizeof(type)))
+		{
+			tmp2->length = arr_k->length;
+			tmp2->sign = 0;
+			tmp2->arr = remove_sign(arr_k);
+		}
+
+		subtraction_from_bigger(arr_i, tmp1, tmp2);
+		arr_i->arr = add_sign(arr_i);
+		arr_i->sign = 1;
+	}
+	else if (sign1 && sign2 && bigger == 2)
+	{
+		type* tmp1;
+		if (tmp1 = (type*)malloc(sizeof(type)))
+		{
+			tmp1->length = arr_j->length;
+			tmp1->sign = 0;
+			tmp1->arr = remove_sign(arr_j);
+		}
+
+		type* tmp2;
+		if (tmp2 = (type*)malloc(sizeof(type)))
+		{
+			tmp2->length = arr_k->length;
+			tmp2->sign = 0;
+			tmp2->arr = remove_sign(arr_k);
+		}
+
+		subtraction_from_bigger(arr_i, tmp2, tmp1);
 	}
 }
 
@@ -558,7 +732,6 @@ int main(int argc, char* argv[])
 		}
 		else if (input == 'q')
 		{
-			/*printf("%d", which_bigger(array[0], array[1]));*/
 			break;
 		}
 		else if (input == 'm')
