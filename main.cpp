@@ -385,7 +385,6 @@ void subtraction_from_bigger(type* base_arr, type* arr1, type* arr2)
 		--h_id;
 	}
 	//musze wyszyscic 0 z poczatku
-	int count = 0;
 	while (tmp_main[0] == '0')
 	{
 		for (int i = 0; i < arr2->length; i++)
@@ -424,18 +423,6 @@ void addition(type* arr_i, type* arr_j, type* arr_k)
 	{
 		add_two_negatives(arr_i, arr_j, arr_k);
 		arr_i->sign = 1;
-		/*if (bigger == 1)
-		{
-			add_to_lower(arr_i, arr_k, arr_j);
-		}
-		else if (bigger == 2)
-		{
-			add_to_lower(arr_i, arr_j, arr_k);
-		}
-		else
-		{
-			add_to_lower(arr_i, arr_j, arr_k);
-		}*/
 	}
 	else if (sign1 && !sign2) //dodawanie liczb o roznych znakach - arr_j - ujemne, arr_k - dodatnie
 	{
@@ -671,7 +658,6 @@ int main(int argc, char* argv[])
 
 	while (true)
 	{
-		const char sign = '=';
 		int i = 0;
 		int j = 0;
 		int k = 0;
@@ -686,10 +672,6 @@ int main(int argc, char* argv[])
 			else if (action == '-')
 			{
 				subtraction(&array[i], &array[j], &array[k]);
-			}
-			else
-			{
-				printf("Undefined\n");
 			}
 		}
 		char input = getchar();
