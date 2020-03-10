@@ -317,52 +317,6 @@ void add_to_bigger(type* base_arr, type* arr1, type* arr2)
 	base_arr->arr = tmp_main;
 }
 
-void add_to_lower(type* base_arr, type* arr1, type* arr2)
-{
-	char* tmp_main = (char*)malloc((arr1->length + 1) * sizeof(char)); //+ 1, poniewaz z przodu jest jeszcze znak
-	for (int i = 1; i < arr1->length + 1; ++i) //zaczynam od 1, bo znak
-	{
-		tmp_main[i] = arr1->arr[i];
-	}
-	tmp_main[arr1->length + 1] = '\0';
-	int h_id = arr1->length;
-	int l_id = arr2->length;
-	base_arr->length = arr1->length;
-	while (h_id > 0)
-	{
-		if (l_id > 0)
-		{
-			/*printf("%s %d\n", tmp_main, h_id);*/
-			tmp_main[h_id] += (arr2->arr[l_id] - 48);
-			/*printf("%c\n", tmp_main[pos_j]);*/
-			if (tmp_main[h_id] > 57 && h_id > 1)
-			{
-				tmp_main[h_id] -= 10;
-				tmp_main[h_id - 1] += 1;
-			}
-			else if (tmp_main[h_id] > 57 && h_id == 1)
-			{
-				/*printf("%s\n", tmp_main);*/
-				tmp_main[h_id] -= 10;
-				char* tmp = (char*)malloc((arr1->length + 2) * sizeof(char)); //+ 2, poniewaz musze pamietac o znaku
-				tmp[0] = '-';
-				tmp[1] = '1';
-				tmp[arr1->length + 2] = '\0';
-				for (int x = arr1->length + 1; x > 1; --x)
-				{
-					tmp[x] = tmp_main[x - 1];
-					/*printf("%s %s\n", tmp_main, tmp);*/
-				}
-				tmp_main = tmp;
-				base_arr->length++;
-			}
-		}
-		--l_id;
-		--h_id;
-	}
-	base_arr->arr = tmp_main;
-}
-
 void add_two_negatives(type* base_arr, type* arr1, type* arr2)
 {
 	unsigned short bigger = abs_bigger(*arr1, *arr2);
@@ -421,6 +375,12 @@ void subtraction_from_bigger(type* base_arr, type* arr1, type* arr2)
 				tmp_main[h_id - 1] -= 1;
 			}
 		}
+
+		if (tmp_main[h_id] < 48)
+		{
+			tmp_main[h_id] += 10;
+			tmp_main[h_id - 1] -= 1;
+		}
 		--l_id;
 		--h_id;
 	}
@@ -447,19 +407,23 @@ void addition(type* arr_i, type* arr_j, type* arr_k)
 		if (bigger == 1) //arr_j jest wieksza, wiec petla bedzie iterowala do konca arr_k
 		{
 			add_to_bigger(arr_i, arr_j, arr_k);	
+			arr_i->sign = 0;
 		}
 		else if (bigger == 2)
 		{
 			add_to_bigger(arr_i, arr_k, arr_j);
+			arr_i->sign = 0;
 		}
 		else
 		{
 			add_to_bigger(arr_i, arr_j, arr_j);
+			arr_i->sign = 0;
 		}
 	}
 	else if (sign1 && sign2) //dodawanie dwoch ujemnych
 	{
 		add_two_negatives(arr_i, arr_j, arr_k);
+		arr_i->sign = 1;
 		/*if (bigger == 1)
 		{
 			add_to_lower(arr_i, arr_k, arr_j);
@@ -494,6 +458,7 @@ void addition(type* arr_i, type* arr_j, type* arr_k)
 		else if (bigger == 2) //abs(arr_k) wieksze
 		{
 			subtraction_from_bigger(arr_i, arr_k, tmp);
+			arr_i->sign = 0;
 		}
 		else
 		{
@@ -518,6 +483,7 @@ void addition(type* arr_i, type* arr_j, type* arr_k)
 		if (bigger == 1)  //abs(arr_j) wieksze 
 		{
 			subtraction_from_bigger(arr_i, arr_j, tmp);
+			arr_i->sign = 0;
 		}
 		else if (bigger == 2) //abs(arr_k) wieksze
 		{
@@ -639,6 +605,8 @@ void subtraction(type* arr_i, type* arr_j, type* arr_k)
 		subtraction_from_bigger(arr_i, tmp1, tmp2);
 		arr_i->arr = add_sign(arr_i);
 		arr_i->sign = 1;
+		free(tmp1);
+		free(tmp2);
 	}
 	else if (sign1 && sign2 && bigger == 2)
 	{
@@ -659,6 +627,9 @@ void subtraction(type* arr_i, type* arr_j, type* arr_k)
 		}
 
 		subtraction_from_bigger(arr_i, tmp2, tmp1);
+
+		free(tmp1);
+		free(tmp2);
 	}
 }
 
@@ -726,7 +697,6 @@ int main(int argc, char* argv[])
 		{
 			for (int i = 0; i < size; i++)
 			{
-				/*printf("%d ", array[i].length);*/
 				printf("%s\n", array[i].arr);
 			}
 		}
